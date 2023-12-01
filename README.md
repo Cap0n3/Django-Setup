@@ -7,6 +7,7 @@ Ce script Bash facilite la création d'un environnement virtuel avec `pyenv` et 
 ## Utilisation
 
 ### Installation des Prérequis
+
 1. Assurez-vous que pyenv n'est pas installé en exécutant `pyenv --version`.
 2. Si pyenv n'est pas installé, le script propose de l'installer avec les dépendances nécessaires.
 3. Assurez-vous que virtualenv n'est pas installé en exécutant `virtualenv --version`.
@@ -21,6 +22,12 @@ Ce script Bash facilite la création d'un environnement virtuel avec `pyenv` et 
 - `<version_python>`: La version de Python à utiliser pour l'environnement virtuel.
 - `<version_django>`: La version de Django à installer dans le projet.
 - `<project_name>`: Le nom du projet Django.
+
+#### Exemple
+
+```bash
+./DjangoSetup.sh /chemin/vers/le/projet 3.8.5 3.1.2 MonProjet
+```
 
 ### Commandes de Nettoyage
 
@@ -39,23 +46,6 @@ Pour supprimer le dossier du projet et l'environnement python local associé:
 ```
 
 > Le script affiche une liste des environnements virtuels installés et vous demande de choisir celui à supprimer. Il vérifie ensuite l'existence du dossier passé en argument, puis demande confirmation avant de procéder à la suppression.
-
-### Exemple
-
-```bash
-./init_project.sh /chemin/vers/le/projet 3.8.5 3.1.2 MonProjet
-```
-
-Le script affichera une liste des environnements virtuels installés et vous demandera le nom de celui que vous souhaitez supprimer.
-
-**Note:** Les dépendances nécessaires à pyenv (telles que OpenSSL, Readline, SQLite3, XZ, zlib) seront installées si elles ne le sont pas déjà, en utilisant Homebrew.
-
-## Exemple
-
-
-```bash
-./DjangoSetup.sh /chemin/vers/le/projet 3.8.5 3.1.2 MonProjet
-```
 
 ## Remarques
 
