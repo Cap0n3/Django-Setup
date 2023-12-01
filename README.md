@@ -6,8 +6,6 @@ Ce script Bash facilite la création d'un environnement virtuel avec `pyenv` et 
 
 ## Utilisation
 
----
-
 ### Installation des Prérequis
 1. Assurez-vous que pyenv n'est pas installé en exécutant `pyenv --version`.
 2. Si pyenv n'est pas installé, le script propose de l'installer avec les dépendances nécessaires.
@@ -37,15 +35,12 @@ Le script affichera une liste des environnements virtuels installés et vous dem
 
 ## Exemple
 
----
 
 ```bash
 ./init_project.sh /chemin/vers/le/projet 3.8.5 3.1.2 MonProjet
 ```
 
 ## Remarques
-
----
 
 - Assurez-vous que pyenv et Homebrew sont installés pour garantir le bon fonctionnement du script.
 - L'environnement virtuel peut être supprimé ultérieurement avec la commande `pyenv virtualenv-delete <env_name>`.
