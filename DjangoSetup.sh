@@ -149,6 +149,40 @@ fi
 # ** Début du script ** #
 # ********************* #
 
+# Vérifie si le nombre d'arguments est correct
+if [ "$#" -ne 4 ]; then
+    print_error "Nombre d'arguments invalide."
+    print_additional_info "Usage: $0 <chemin_dossier> <version_python> <version_django> <project_name>"
+    print_additional_info "Exemple: $0 /Users/username/Projects/MyProject 3.8.5 3.1.2 MyProject"
+    print_additional_info "Pour voir les versions de python : pyenv install --list | grep ' 3\.'"
+    print_additional_info "Pour voir les version de django : pip install django=="
+    exit 1
+fi
+
+# Vérifie si le dossier existe et demande si il faut créer le dossier
+if [ ! -d "$1" ]; then
+    read -p "Le dossier $1 n'existe pas. Voulez-vous le créer ? (y/n) " create_folder
+    if [ "$create_folder" == "y" ]; then
+        print_info "Création du dossier $1..."
+        run_command_silently mkdir -p $1
+        if [ $? -eq 0 ]; then
+            print_success "Le dossier $1 a été créé."
+        else
+            print_error "Le dossier $1 n'a pas été créé, une erreur est survenue."
+            exit 1
+        fi
+    else
+        print_info "Création du dossier annulée."
+        print_error "Vous devez créer un dossier pour continuer."
+        exit 1
+    fi
+fi
+
+dossier=$1
+version_python=$2
+version_django=$3
+project_name=$4
+
 # Vérifie si pyenv est installé
 if run_command_silently pyenv --version ; then
     print_info "pyenv est déjà installé"
@@ -184,40 +218,6 @@ else
         exit 1
     fi
 fi
-
-# Vérifie si le nombre d'arguments est correct
-if [ "$#" -ne 4 ]; then
-    print_error "Nombre d'arguments invalide."
-    print_additional_info "Usage: $0 <chemin_dossier> <version_python> <version_django> <project_name>"
-    print_additional_info "Exemple: $0 /Users/username/Projects/MyProject 3.8.5 3.1.2 MyProject"
-    print_additional_info "Pour voir les versions de python : pyenv install --list | grep ' 3\.'"
-    print_additional_info "Pour voir les version de django : pip install django=="
-    exit 1
-fi
-
-# Vérifie si le dossier existe et demande si il faut créer le dossier
-if [ ! -d "$1" ]; then
-    read -p "Le dossier $1 n'existe pas. Voulez-vous le créer ? (y/n) " create_folder
-    if [ "$create_folder" == "y" ]; then
-        print_info "Création du dossier $1..."
-        run_command_silently mkdir -p $1
-        if [ $? -eq 0 ]; then
-            print_success "Le dossier $1 a été créé."
-        else
-            print_error "Le dossier $1 n'a pas été créé, une erreur est survenue."
-            exit 1
-        fi
-    else
-        print_info "Création du dossier annulée."
-        print_error "Vous devez créer un dossier pour continuer."
-        exit 1
-    fi
-fi
-
-dossier=$1
-version_python=$2
-version_django=$3
-project_name=$4
 
 # Vérifie si la version de python est déjà installée et l'installe si ce n'est pas le cas
 if check_python_version $version_python ; then
