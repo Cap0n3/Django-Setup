@@ -3,9 +3,9 @@
 set -e
 DEBUG=true
 
-# ======================== #
-# === Fonctions utiles === #
-# ======================== #
+# ===================================== #
+# =========  Fonctions utiles ========= #
+# ===================================== #
 
 # Affichage des messages
 print_error() {
@@ -66,10 +66,85 @@ open_terminal_and_run_commands() {
     fi
 }
 
+clean_venv() {
+    # Suppression de l'environnement virtuel
+    read -p "Voulez-vous supprimer un environnement virtuel ? (y/n) " delete_env
+    if [ "$delete_env" == "y" ]; then
+        print_additional_info "Voici une liste des environnements virtuels installés :"
+        pyenv virtualenvs
+        read -p "Taper le nom de l'environnement virtuel à supprimer : " env_name
+        pyenv virtualenv-delete $env_name
+        if [ $? -eq 0 ]; then
+            print_success "L'environnement virtuel $env_name a été supprimé."
+            return 0
+        else
+            print_error "L'environnement virtuel $env_name n'a pas été supprimé."
+            return 1
+        fi
+    else
+        print_info "Suppression de l'environnement virtuel annulée."
+        exit 0
+    fi
+}
 
-# ======================== #
-# === Script principal === #
-# ======================== #
+clean_project() {
+    project_path=$1
+    # Vérifie si le dossier existe
+    print_info "Vérification de l'existence du dossier $project_path..."
+    if [ ! -d "$project_path" ]; then
+        print_error "Le dossier $project_path n'existe pas."
+        exit 1
+    fi
+    # Suppression du dossier du projet et de l'environnement python local
+    read -p "Voulez-vous supprimer le dossier du projet Django et l'environnement python local ? (y/n) " delete_project
+    if [ "$delete_project" == "y" ]; then
+        print_additional_info "Suppression du dossier du projet et de l'environnement python local..."
+        run_command_silently rm -rf $project_path
+        if [ $? -eq 0 ]; then
+            print_success "Le dossier $project_path et l'environnement python local ont été supprimés."
+            return 0
+        else
+            print_error "Le dossier $project_path et l'environnement python local n'ont pas été supprimés, une erreur est survenue."
+            return 1
+        fi
+    else
+        print_info "Suppression du dossier du projet et de l'environnement python local annulée."
+        exit 0
+    fi
+}
+
+# ===================================== #
+# ========= Script principal =========  #
+# ===================================== #
+
+# ***************************** #
+# *** Commandes de nettoyage ** #
+# ***************************** #
+
+# Vérifie si une option --clean a été passée (suppression de l'environnement virtuel)
+if [ "$1" == "--clean" ]; then
+    # Suppression de l'environnement virtuel
+    clean_venv
+    exit 0
+    # Véfirier si une option --clean-all a été passée (suppression du dossier du projet et de l'environnement python local)
+elif [ "$1" == "--clean-all" ]; then
+    # Vérifier si un deuxième argument a été passé (chemin du dossier du projet)
+    if [ -z "$2" ]; then
+        print_error "Veuillez spécifier le chemin du dossier du projet à supprimer."
+        print_additional_info "Usage: $0 --clean-all <chemin_dossier>"
+        print_additional_info "Exemple: $0 --clean-all /Users/username/Projects/MyProject"
+        exit 1
+    fi
+    # Suppression de l'environnement virtuel
+    clean_venv
+    # Suppression du dossier du projet et de l'environnement python local
+    clean_project $2
+    exit 0
+fi
+
+# ********************* #
+# ** Début du script ** #
+# ********************* #
 
 # Vérifie si pyenv est installé
 if run_command_silently pyenv --version ; then
@@ -107,29 +182,6 @@ else
     fi
 fi
 
-
-# Vérifie si une option --clean a été passée (suppression de l'environnement virtuel)
-if [ "$1" == "--clean" ]; then
-    read -p "Voulez-vous supprimer un environnement virtuel ? (y/n) " delete_env
-    if [ "$delete_env" == "y" ]; then
-        print_additional_info "Voici une liste des environnements virtuels installés :"
-        pyenv virtualenvs
-        read -p "Taper le nom de l'environnement virtuel à supprimer : " env_name
-        pyenv virtualenv-delete $env_name
-        if [ $? -eq 0 ]; then
-            print_success "L'environnement virtuel $env_name a été supprimé."
-            exit 0
-        else
-            print_error "L'environnement virtuel $env_name n'a pas été supprimé."
-            exit 1
-        fi
-    else
-        print_info "Suppression annulée."
-        exit 0
-    fi
-fi
-
-
 # Vérifie si le nombre d'arguments est correct
 if [ "$#" -ne 4 ]; then
     print_error "Nombre d'arguments invalide."
@@ -140,10 +192,23 @@ if [ "$#" -ne 4 ]; then
     exit 1
 fi
 
-# Vérifie si le dossier existe
+# Vérifie si le dossier existe et demande si il faut créer le dossier
 if [ ! -d "$1" ]; then
-    print_error "Le dossier $1 n'existe pas, veuillez le créer."
-    exit 1
+    read -p "Le dossier $1 n'existe pas. Voulez-vous le créer ? (y/n) " create_folder
+    if [ "$create_folder" == "y" ]; then
+        print_info "Création du dossier $1..."
+        run_command_silently mkdir -p $1
+        if [ $? -eq 0 ]; then
+            print_success "Le dossier $1 a été créé."
+        else
+            print_error "Le dossier $1 n'a pas été créé, une erreur est survenue."
+            exit 1
+        fi
+    else
+        print_info "Création du dossier annulée."
+        print_error "Vous devez créer un dossier pour continuer."
+        exit 1
+    fi
 fi
 
 dossier=$1
