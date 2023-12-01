@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Script: Django Project Initialization with pyenv-virtualenv
+# Author: Alexandre Guillin
+
 set -e
 DEBUG=true
 
