@@ -15,7 +15,7 @@ Ce script Bash facilite la création d'un environnement virtuel avec `pyenv` et 
 ### Création d'un Environnement Virtuel et Initialisation d'un Projet Django
 
 ```bash
-./init_project.sh <chemin_dossier> <version_python> <version_django> <project_name>
+./DjangoSetup.sh <chemin_dossier> <version_python> <version_django> <project_name>
 ```
 - `<chemin_dossier>`: Le chemin du dossier où vous souhaitez initialiser le projet.
 - `<version_python>`: La version de Python à utiliser pour l'environnement virtuel.
@@ -26,7 +26,7 @@ Ce script Bash facilite la création d'un environnement virtuel avec `pyenv` et 
 
 Pour supprimer un environnement virtuel, utilisez l'option `--clean`:
 ```bash
-./init_project.sh --clean
+./DjangoSetup.sh --clean
 ```
 
 Le script affichera une liste des environnements virtuels installés et vous demandera le nom de celui que vous souhaitez supprimer.
@@ -37,7 +37,7 @@ Le script affichera une liste des environnements virtuels installés et vous dem
 
 
 ```bash
-./init_project.sh /chemin/vers/le/projet 3.8.5 3.1.2 MonProjet
+./DjangoSetup.sh /chemin/vers/le/projet 3.8.5 3.1.2 MonProjet
 ```
 
 ## Remarques
